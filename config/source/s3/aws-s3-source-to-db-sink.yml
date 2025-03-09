@@ -1,0 +1,25 @@
+etlMode: "batch"  # could be "batch", "streaming", or "hybrid"
+
+source:
+  type: "s3"  # could be "file", "s3", "hdfs", "db", etc.
+  region: "ap-southeast-2"
+  bucketName: "geonet-open-data"
+  path: "time-series/tilde/v1/domain=coastal/station=NCPT/name=water-height/sensorcode=41/method=15s/aspect=nil/start=2025-01-01/coastal.NCPT.water-height.41.15s.nil.m.m.2025-01-01T00:00:00Z.csv.gz"
+  compressionConfig:
+    enabled: true
+    compressionType: "GZIP"
+
+transformation:
+  type: "custom"  # Could be "map", "filter", "join", etc.
+  logic:
+    - "filter: column_name > 100"
+    - "map: column_name -> column_name * 2"
+
+#sink:
+#  type: "db"  # Could be "db", "file", "s3", etc.
+#  dbConfig:
+#    driverName: "org.postgresql.Driver"
+#    url: "jdbc:postgresql://localhost:5432/postgres"
+#    username: "postgres"
+#    password: "password"
+#    table: "user_data"

@@ -1,0 +1,12 @@
+etlMode: "streaming"
+
+source:
+  type: "kafka"
+  kafkaConfig:
+    bootstrapServers: "localhost:9092"
+    topic: "ecommerce-transactions"
+    groupId: "etl-consumer-group"
+    autoOffsetReset: "earliest"
+    enableAutoCommit: true
+    sessionTimeoutMs: 30000
+    heartbeatIntervalMs: 10000

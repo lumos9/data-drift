@@ -1,0 +1,11 @@
+id,name,age,gender,email,phone,city,state,country,occupation
+1,John Doe,30,Male,john.doe@example.com,555-1234,New York,NY,USA,Engineer
+2,Jane Smith,25,Female,jane.smith@example.com,555-5678,Los Angeles,CA,USA,Doctor
+3,Mike Johnson,40,Male,mike.johnson@example.com,555-8765,Chicago,IL,USA,Teacher
+4,Emily Davis,35,Female,emily.davis@example.com,555-4321,Miami,FL,USA,Designer
+5,Robert Brown,50,Male,robert.brown@example.com,555-2345,Houston,TX,USA,Manager
+6,Linda White,28,Female,linda.white@example.com,555-6789,San Francisco,CA,USA,Analyst
+7,David Wilson,45,Male,david.wilson@example.com,555-9876,Seattle,WA,USA,Consultant
+8,Susan Martin,32,Female,susan.martin@example.com,555-3456,Boston,MA,USA,Nurse
+9,James Lee,29,Male,james.lee@example.com,555-7654,Denver,CO,USA,Developer
+10,Patricia Moore,37,Female,patricia.moore@example.com,555-5432,Atlanta,GA,USA,Entrepreneur

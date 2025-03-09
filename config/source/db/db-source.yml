@@ -1,0 +1,11 @@
+etlMode: "batch"
+
+source:
+  type: "db"  # Could be "db", "file", "s3", etc.
+  dbConfig:
+    driverName: "org.postgresql.Driver"
+    url: "jdbc:postgresql://localhost:5432/postgres"
+    username: "postgres"
+    password: "password"
+    query: "select * from user_data"
+    schemaName: "public"

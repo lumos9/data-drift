@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
+application {
+    mainClassName = 'org.example.Entrypoint'
+    applicationDefaultJvmArgs = [
+            '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.io=ALL-UNNAMED',
+            '--add-opens', 'java.base/sun.nio.ch=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.util=ALL-UNNAMED'
+    ]
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.Entrypoint'
+        )
+    }
+    // Enable multi-release JAR support
+//    doFirst {
+//        if (JavaVersion.current().isJava9Compatible()) {
+//            // Enable multi-release JARs for Java 9 and higher
+//            archiveFileName = "app-${version}-mr.jar"
+//        }
+//    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.apache.logging.log4j:log4j-core:2.21.1'
+    implementation 'org.apache.logging.log4j:log4j-api:2.21.1'
+
+    // SLF4J API (Required for AWS SDK)
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+
+    // Redirect SLF4J to Log4j2
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.21.1'
+
+    //implementation 'com.github.javafaker:javafaker:1.0.2'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
+    implementation 'org.apache.commons:commons-compress:1.27.1'
+
+    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    implementation 'org.yaml:snakeyaml:2.3'
+
+    // Kafka client for streaming
+    implementation 'org.apache.kafka:kafka-clients:3.7.1'
+
+    implementation 'software.amazon.awssdk:s3:2.20.128'
+
+    // https://mvnrepository.com/artifact/com.opencsv/opencsv
+    implementation 'com.opencsv:opencsv:5.10'
+
+    // https://mvnrepository.com/artifact/com.mchange/c3p0
+    implementation 'com.mchange:c3p0:0.10.2'
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation 'org.postgresql:postgresql:42.7.5'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,21 @@
+etlMode: "batch"  # could be "batch", "streaming", or "hybrid"
+
+source:
+  type: "file"  # could be "file", "s3", "hdfs", "db", etc.
+  path: "data/data.csv"
+
+transformation:
+  type: "custom"  # Could be "map", "filter", "join", etc.
+  logic:
+    - "filter: column_name > 100"
+    - "map: column_name -> column_name * 2"
+
+sink:
+  type: "db"  # Could be "db", "file", "s3", etc.
+  dbConfig:
+    driverName: "org.postgresql.Driver"
+    url: "jdbc:postgresql://localhost:5432/postgres"
+    username: "postgres"
+    password: "password"
+    table: "user_data"
+    schemaName: "public"

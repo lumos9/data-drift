@@ -1,0 +1,25 @@
+source:
+  type: "s3"  # Could be "file", "s3", "hdfs", "db", etc.
+  path: "data/data.csv"
+  region: "us-east-1"
+  bucketName: "your-bucket-name"
+
+  # Authentication options
+  auth:
+    method: "iam-role"  # Options: "iam-role", "access-keys", "session-token"
+    accessKey: "your-access-key"  # Required if method = "access-keys"
+    secretKey: "your-secret-key"  # Required if method = "access-keys"
+    sessionToken: "your-session-token"  # Required if method = "session-token"
+    profile: "default"  # AWS profile name (optional if using ~/.aws/credentials)
+
+  compressionConfig:
+    enabled: true
+    compressionType: "GZIP" # must be upper-case
+
+  # Encryption settings
+  encryptionConfig:
+    enabled: true  # Set to true if the data is encrypted
+    encryptionType: "SSE-KMS"  # Options: "SSE-S3", "SSE-KMS", "SSE-C", "NONE" - Must be upper-case
+    kmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abcd1234"  # Required if type = "SSE-KMS"
+    sseCustomerAlgorithm: "AES256"  # Required if type = "SSE-C"
+    sseCustomerKey: "your-base64-encoded-key"  # Required if type = "SSE-C"
