@@ -19,8 +19,7 @@ public class ETLFlow {
     private final String configPath;
     private ETLMode mode;
 
-    public ETLFlow(ETLMode mode, String configPath) {
-        this.mode = mode;
+    public ETLFlow(String configPath) {
         this.configPath = configPath;
     }
 
@@ -36,22 +35,6 @@ public class ETLFlow {
     }
 
     public void start() {
-        logger.info("ETL process mode: {}", mode);
-        switch (mode) {
-            case BATCH:
-                runBatch();
-                break;
-            case STREAMING:
-                runStreaming();
-                break;
-            case HYBRID:
-                runBatch();
-                runStreaming();
-                break;
-        }
-    }
-
-    private void runBatch() {
         logger.info("Loading config '{}' for etl processing..", configPath);
         Config config;
         try {
@@ -61,6 +44,22 @@ public class ETLFlow {
                     ExceptionUtils.getStackTrace(ex));
             return;
         }
+        verifyMode(config);
+        logger.info("ETL process mode: {}", mode);
+        switch (mode) {
+            case BATCH:
+                runBatch(config);
+                break;
+            case STREAMING:
+                runStreaming(config);
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognized etlMode: " + mode);
+        }
+    }
+
+    private void runBatch(Config config) {
+        logger.info("Running ETL flow in batch mode...");
         List<ETLDataSource> batchSources;
         try {
             batchSources =
@@ -85,8 +84,8 @@ public class ETLFlow {
         pipeline.finish();
     }
 
-    private void runStreaming() {
-        logger.info("Running streaming ETL...");
+    private void runStreaming(Config config) {
+        logger.info("Running ETL flow in streaming mode...");
 //        for (StreamingDataSource source : streamingSources) {
 //            source.startListening(pipeline);
 //        }

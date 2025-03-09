@@ -2,7 +2,6 @@ package org.example.compression;
 
 import org.example.config.CompressionConfig;
 
-
 public class CompressionAdapterFactory {
     public static CompressionAdapter getAdapter(CompressionConfig compressionConfig) throws Exception {
         if (compressionConfig == null) return new NoOpCompressionAdapter();
