@@ -5,12 +5,13 @@
 ## 🚀 **Overview**
 
 **Data Drift** is a flexible and scalable ETL (Extract, Transform, Load) framework built in Java, designed to handle
-diverse data sources and sinks with ease. It enables seamless data integration from streaming platforms like Kafka and
-traditional databases to modern storage and processing systems.
+diverse data sources and sinks with ease. It enables seamless data integration from streaming platforms like Local File System, Aws S3, Kafka and
+traditional databases to modern storage and processing systems. All the processing can be done with just a yml config file
 
 ## 🎯 **Features**
 
 - ✅ Support for multiple data sources (e.g., files, S3, Kafka, databases)
+- ✅ All sources and sinks are configured with one config file
 - ✅ Configurable pipelines for different transformation needs
 - ✅ High-performance, fault-tolerant processing
 - ✅ Modular architecture for easy extension
