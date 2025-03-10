@@ -51,7 +51,7 @@ Before you begin, ensure you have met the following requirements:
 1. Setup and ensure Postgres is running and accessible. Ignore this step if the db is already available
     ```bash
    #Setup postgres db locally via Docker
-    setup/db/jdbc/postgres/setup-pg.sh
+   setup/db/jdbc/postgres/setup-pg.sh
    
    #Check if container is listening on port
    nc -vz localhost 5432
@@ -90,7 +90,7 @@ configured.
 
 1. Run Data Drift App with config file
    ```bash
-    java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/s3/aws-s3-source-to-stdout-sink.yml
+   java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/s3/aws-s3-source-to-stdout-sink.yml
    ```
 
 ### 3. **Batch ETL – Postgres Source to StdOut Sink**
@@ -102,7 +102,7 @@ is configured.
 1. Setup and ensure Postgres is running and accessible. Ignore this step if the db is already available
     ```bash
    #Setup postgres db locally via Docker
-    setup/db/jdbc/postgres/setup-pg.sh
+   setup/db/jdbc/postgres/setup-pg.sh
    
    #Check if container is listening on port
    nc -vz localhost 5432
@@ -111,7 +111,7 @@ is configured.
     ```
 2. Run Data Drift App with config file
    ```bash
-     java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/db/db-source.yml
+   java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/db/db-source.yml
    ```
 
 ### 4. **Streaming ETL – Kafka Source to StdOut Sink**
@@ -121,15 +121,15 @@ is configured.
 
 1. Start and create Kafka Topic via Docker. This may need 16GB of RAM
     ```bash
-      setup/kafka/launch_kafka.sh
+    setup/kafka/launch_kafka.sh
     ```
 2. Run Data Drift App (Kafka Consumer) in one terminal
     ```bash
-      java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/kafka/kafka-source.yml
+    java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/kafka/kafka-source.yml
     ```
 3. Run Kafka Producer in another terminal
     ```bash
-      ./kafka-producer-to-broker.sh
+    ./kafka-producer-to-broker.sh
     ```
 
 [//]: # (Example:)
