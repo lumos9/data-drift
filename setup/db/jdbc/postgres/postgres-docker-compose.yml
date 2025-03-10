@@ -9,6 +9,8 @@ services:
       - "5432:5432"
     networks:
       - pg-network
+    volumes:
+      - ./local-postgres-data:/var/lib/postgresql/data
 
 networks:
   pg-network:

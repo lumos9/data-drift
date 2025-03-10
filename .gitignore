@@ -5,6 +5,9 @@ logs/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Project ###
+setup/db/jdbc/postgres/local-postgres-data
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

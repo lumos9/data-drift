@@ -114,8 +114,6 @@ check_services() {
 
 
 info "Setting up local postgres db.."
-
-mkdir -p local_db
 CONTAINER_NAME=local_postgres
 
 # Check if container is running
@@ -130,15 +128,17 @@ else
     info "Container '$CONTAINER_NAME' is not running."
 fi
 
-COMPOSE_FILE="postgres-docker-compose.yml"
-run_command docker compose -f $COMPOSE_FILE up -d
+PG_SETUP_PATH="${SETUP_DIR}/db/jdbc/postgres"
+#mkdir -p "${PG_SETUP_PATH}/local_db"
+COMPOSE_FILE="${PG_SETUP_PATH}/postgres-docker-compose.yml"
+run_command docker compose -f "${COMPOSE_FILE}" up -d
 
-run_command docker cp wait-for-postgres-startup.sh local_postgres:/wait-for-postgres-startup.sh
+run_command docker cp "${PG_SETUP_PATH}/wait-for-postgres-startup.sh" local_postgres:/wait-for-postgres-startup.sh
 
 # Execute the readiness check from the host machine
 run_command docker exec -it local_postgres /wait-for-postgres-startup.sh
 
-run_command docker cp create_table.sql local_postgres:/create_table.sql
+run_command docker cp "${PG_SETUP_PATH}/create_table.sql" local_postgres:/create_table.sql
 
 # Check if postgres container is up and running on localhost port 5432
 docker_ps_output=$(docker ps --filter "publish=5432" --format "{{.Names}}")

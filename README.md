@@ -10,7 +10,7 @@ traditional databases to modern storage and processing systems.
 
 ## 🎯 **Features**
 
-- ✅ Support for multiple data sources (e.g., Kafka, databases)
+- ✅ Support for multiple data sources (e.g., files, S3, Kafka, databases)
 - ✅ Configurable pipelines for different transformation needs
 - ✅ High-performance, fault-tolerant processing
 - ✅ Modular architecture for easy extension
@@ -36,26 +36,100 @@ Before you begin, ensure you have met the following requirements:
     ```bash
     cd data-drift
     ```
-3. Set up the pipeline
-    ```bash
-    ./setup.sh
-    ```
-4. Build the project
+3. Build the project
     ```bash
     ./gradlew clean build
      ```
 
 ## Usage
 
-To use this project, follow these steps:
+### 1. **Batch ETL – File Source to Postgres Sink**
 
-1. Start the Kafka Consumer one shell:
+**Description:** This pipeline reads data from a file and inserts it into a Postgres table.  
+**Prerequisite:** Ensure Postgres is running and accessible.
+
+1. Setup and ensure Postgres is running and accessible. Ignore this step if the db is already available
     ```bash
-    ./start-kafka-consumer-flink-db-sink.sh
+   #Setup postgres db locally via Docker
+    setup/db/jdbc/postgres/setup-pg.sh
+   
+   #Check if container is listening on port
+   nc -vz localhost 5432
+   #Should say something similar to following depending on OS you are running
+   #Connection to localhost port 5432 [tcp/postgresql] succeeded!
     ```
-2. Start the Kafka Producer in another shell:
+2. Run Data Drift App with config file
     ```bash
-    ./start-kafka-producer.sh
+    java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/file/file-source-to-db-sink.yml
+    ```
+
+### 2. **Batch ETL – AWS S3 Source to Postgres Sink**
+
+**Description:** This pipeline reads data from AWS S3 file and inserts it into a Postgres table.
+**Prerequisite:** Ensure Postgres is running and accessible.
+
+1. Setup and ensure Postgres is running and accessible. Ignore this step if the db is already available
+    ```bash
+   #Setup postgres db locally via Docker
+    setup/db/jdbc/postgres/setup-pg.sh
+   
+   #Check if container is listening on port
+   nc -vz localhost 5432
+   #Should say something similar to following depending on OS you are running
+   #Connection to localhost port 5432 [tcp/postgresql] succeeded!
+    ```
+2. Run Data Drift App with config file
+   ```bash
+   java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/s3/aws-s3-source-to-db-sink.yml
+   ```
+
+### 2. **Batch ETL – AWS S3 Source to StdOut Sink**
+
+**Description:** This pipeline reads data from AWS S3 file and logs to StdOut. StdOut is default Sink if no Sink is
+configured.
+
+1. Run Data Drift App with config file
+   ```bash
+    java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/s3/aws-s3-source-to-stdout-sink.yml
+   ```
+
+### 3. **Batch ETL – Postgres Source to StdOut Sink**
+
+**Description:** This pipeline reads data from Postgres db table and logs to StdOut. StdOut is default Sink if no Sink
+is configured.
+**Prerequisite:** Ensure Postgres is running and accessible.
+
+1. Setup and ensure Postgres is running and accessible. Ignore this step if the db is already available
+    ```bash
+   #Setup postgres db locally via Docker
+    setup/db/jdbc/postgres/setup-pg.sh
+   
+   #Check if container is listening on port
+   nc -vz localhost 5432
+   #Should say something similar to following depending on OS you are running
+   #Connection to localhost port 5432 [tcp/postgresql] succeeded!
+    ```
+2. Run Data Drift App with config file
+   ```bash
+     java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/db/db-source.yml
+   ```
+
+### 4. **Streaming ETL – Kafka Source to StdOut Sink**
+
+**Description:** This pipeline reads data from a file and inserts it into a Postgres table.  
+**Prerequisite:** Ensure Kafka Broker is running and accessible.
+
+1. Start and create Kafka Topic via Docker. This may need 16GB of RAM
+    ```bash
+      setup/kafka/launch_kafka.sh
+    ```
+2. Run Data Drift App (Kafka Consumer) in one terminal
+    ```bash
+      java -cp build/libs/data-drift-1.0-SNAPSHOT-all.jar org.example.Entrypoint config/source/kafka/kafka-source.yml
+    ```
+3. Run Kafka Producer in another terminal
+    ```bash
+      ./kafka-producer-to-broker.sh
     ```
 
 [//]: # (Example:)

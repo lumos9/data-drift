@@ -86,7 +86,7 @@ public class DataPipeline {
     }
 
     public void process(Map<String, Object> record) {
-        if (list.size() != 2) {
+        if (list.size() != 10_000) {
             list.add(record);
         } else {
             List<Map<String, Object>> newList = new ArrayList<>(list);
@@ -116,8 +116,11 @@ public class DataPipeline {
     }
 
     public void finish() {
-        ExecutorService poolExecutor = getOrInitPool();
-        shutdownAndAwaitTermination(poolExecutor);
+        ExecutorService poolExecutor = poolRef.get();
+        if (poolExecutor != null) {
+            shutdownAndAwaitTermination(poolExecutor);
+            poolRef.set(null);
+        }
         etlDataSink.close();
     }
 }

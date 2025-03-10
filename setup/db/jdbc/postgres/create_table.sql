@@ -17,3 +17,23 @@ CREATE TABLE user_data (
 
 -- Optional: Truncate the table to remove all rows if needed
 -- TRUNCATE TABLE user_data;
+
+DROP TABLE IF EXISTS coastal_data;
+
+CREATE TABLE coastal_data (
+    id BIGSERIAL PRIMARY KEY,
+    domain VARCHAR(50),
+    station VARCHAR(50),
+    name VARCHAR(100),
+    sensorcode INT,
+    method VARCHAR(20),
+    aspect VARCHAR(20),
+    start TIMESTAMP,
+    timestamp TIMESTAMP NOT NULL,
+    value DOUBLE PRECISION,
+    error VARCHAR(255),
+    qc_flags VARCHAR(255)
+);
+
+-- Optional: Truncate the table to remove all rows if needed
+-- TRUNCATE TABLE coastal_data;

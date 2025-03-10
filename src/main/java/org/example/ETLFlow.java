@@ -60,9 +60,20 @@ public class ETLFlow {
 
     private void runBatch(Config config) {
         logger.info("Running ETL flow in batch mode...");
-        List<ETLDataSource> batchSources;
+        runPipeline(config);
+        //TODO: expand for more batch capabilities
+    }
+
+    private void runStreaming(Config config) {
+        logger.info("Running ETL flow in streaming mode...");
+        runPipeline(config);
+        //TODO: expand for more streaming capabilities
+    }
+
+    private void runPipeline(Config config) {
+        List<ETLDataSource> sources;
         try {
-            batchSources =
+            sources =
                     List.of(Objects.requireNonNull(SourceFactory.createSource(config.getSource())));
         } catch (Exception ex) {
             logger.error("Unable to register Sources. Details: {}", ExceptionUtils.getStackTrace(ex));
@@ -78,16 +89,9 @@ public class ETLFlow {
         }
 
         DataPipeline pipeline = new DataPipeline(sinks.getFirst());
-        for (ETLDataSource source : batchSources) {
+        for (ETLDataSource source : sources) {
             source.submitTo(pipeline);
         }
         pipeline.finish();
-    }
-
-    private void runStreaming(Config config) {
-        logger.info("Running ETL flow in streaming mode...");
-//        for (StreamingDataSource source : streamingSources) {
-//            source.startListening(pipeline);
-//        }
     }
 }

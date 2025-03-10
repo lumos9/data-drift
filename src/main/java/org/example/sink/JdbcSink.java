@@ -10,6 +10,7 @@ import java.beans.PropertyVetoException;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.Instant;
 
 public class JdbcSink extends ETLDataSink {
     private static final Logger logger = LogManager.getLogger(JdbcSink.class);
@@ -52,7 +53,7 @@ public class JdbcSink extends ETLDataSink {
             }
         } catch (Exception ex) {
             throw new RuntimeException(
-                    "Failed to connect to DB with url: '" + url + "'. Please sink connection settings in your yml file",
+                    "Failed to connect to DB with url: '" + url + "'. Please check sink connection settings in your yml file",
                     ex);
         }
     }
@@ -109,11 +110,13 @@ public class JdbcSink extends ETLDataSink {
                 columnTypes.put(rs.getString("COLUMN_NAME"), rs.getInt("DATA_TYPE"));
             }
 
-            String sql = buildInsertSQL(tableName, columnTypes.keySet());
+            String sql = buildInsertSQL(tableName, recordKeys);
+            //logger.info(sql);
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 for (Map<String, Object> record : records) {
                     int paramIndex = 1;
-                    for (String key : columnTypes.keySet()) {
+                    for (String key : recordKeys) {
+                        //logger.info("{} - {}", key, paramIndex);
                         Object value = record.get(key);
                         int sqlType = columnTypes.get(key);
 
@@ -137,17 +140,23 @@ public class JdbcSink extends ETLDataSink {
 
     // Upsert all columns
     private String buildInsertSQL(String tableName, Set<String> columns) {
+        // Remove "id" from the insert columns since it's auto-generated
+//        Set<String> insertColumns = columns.stream()
+//                //.filter(col -> !col.equals("id"))
+//                .collect(Collectors.toSet());
+
         String columnNames = String.join(", ", columns);
         String placeholders = String.join(", ", Collections.nCopies(columns.size(), "?"));
 
-        // Construct the conflict action. Update all columns with the corresponding values from EXCLUDED.
         String updateSet = columns.stream()
-                .filter(col -> !col.equals("id"))  // Avoid updating the 'id' column itself
                 .map(col -> col + " = EXCLUDED." + col)
                 .collect(Collectors.joining(", "));
 
-        return "INSERT INTO " + tableName + " (" + columnNames + ") VALUES (" + placeholders + ") " +
+        String query = "INSERT INTO " + tableName + " (" + columnNames + ") VALUES (" + placeholders + ") " +
                 "ON CONFLICT (id) DO UPDATE SET " + updateSet;
+
+        //logger.info(query);
+        return query;
     }
 
     private Object convertValueToSQLType(Object value, int sqlType) {
@@ -156,7 +165,7 @@ public class JdbcSink extends ETLDataSink {
                 case Types.INTEGER, Types.BIGINT, Types.SMALLINT -> Integer.parseInt(value.toString());
                 case Types.DECIMAL, Types.NUMERIC, Types.FLOAT, Types.DOUBLE -> Double.parseDouble(value.toString());
                 case Types.BOOLEAN -> Boolean.parseBoolean(value.toString());
-                case Types.TIMESTAMP, Types.DATE -> Timestamp.valueOf(value.toString());
+                case Types.TIMESTAMP, Types.DATE -> Timestamp.from(Instant.parse(value.toString()));
                 default -> value; // fallback for VARCHAR, TEXT, etc.
             };
         } catch (Exception e) {
